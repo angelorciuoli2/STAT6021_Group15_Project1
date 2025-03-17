@@ -1,0 +1,160 @@
+
+```{r}
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+library(GGally)
+```
+```{r}
+# Load the data
+diamonds <- read.csv("diamonds4.csv")
+
+# Inspect the data
+str(diamonds)
+summary(diamonds)
+head(diamonds)
+```
+```{r}
+diamonds$clarity <- factor(diamonds$clarity, levels = c("I3", "I2", "I1", "SI2", "SI1", "VS2", "VS1", "VVS2", "VVS1", "IF", "FL"))
+diamonds$color <- factor(diamonds$color, levels = c("J", "I", "H", "G", "F", "E", "D"))
+diamonds$cut <- factor(diamonds$cut, levels = c("Fair", "Good", "Very Good", "Ideal", "Astor Ideal"))
+```
+```{r}
+sum(is.na(diamonds))
+```
+```{r}
+# Summary Statistics
+summary(diamonds$price ~ diamonds$carat)
+
+ggplot(diamonds, aes(x = carat, y = price)) +
+  geom_point() +
+  labs(title = "Carat vs. Price",
+       x = "Carat",
+       y = "Price ($)")
+
+# Linear Regression
+carat_model <- lm(price ~ carat, data = diamonds)
+summary(carat_model)
+```
+```{r}
+# Summary Statistics (Boxplots are very helpful here)
+boxplot(price ~ clarity, data = diamonds, main = "Price ($) vs. Clarity")
+#or
+summary(diamonds$price ~ diamonds$clarity)
+
+# ANOVA
+clarity_anova <- aov(price ~ clarity, data = diamonds)
+summary(clarity_anova)
+
+# Linear Regression (clarity as factor)
+clarity_model <- lm(price ~ clarity, data = diamonds)
+summary(clarity_model)
+```
+```{r}
+# Summary Statistics
+boxplot(price ~ color, data = diamonds, main = "Price ($) vs. Color")
+#or
+summary(diamonds$price ~ diamonds$color)
+
+# ANOVA
+color_anova <- aov(price ~ color, data = diamonds)
+summary(color_anova)
+
+# Linear Regression (color as factor)
+color_model <- lm(price ~ color, data = diamonds)
+summary(color_model)
+```
+```{r}
+# Summary Statistics
+boxplot(price ~ cut, data = diamonds, main = "Price ($) vs. Cut")
+#or
+summary(diamonds$price ~ diamonds$cut)
+
+# ANOVA
+cut_anova <- aov(price ~ cut, data = diamonds)
+summary(cut_anova)
+
+# Linear Regression (cut as factor)
+cut_model <- lm(price ~ cut, data = diamonds)
+summary(cut_model)
+```
+```{r}
+# Linear Regression Models for each of the 4 C's
+carat_model <- lm(price ~ carat, data = diamonds)
+clarity_model <- lm(price ~ clarity, data = diamonds)
+color_model <- lm(price ~ color, data = diamonds)
+cut_model <- lm(price ~ cut, data = diamonds)
+
+# ANOVA for categorical variables
+clarity_anova <- aov(price ~ clarity, data = diamonds)
+color_anova <- aov(price ~ color, data = diamonds)
+cut_anova <- aov(price ~ cut, data = diamonds)
+
+# Summary of models and ANOVA
+summary(carat_model)
+summary(clarity_model)
+summary(color_model)
+summary(cut_model)
+
+summary(clarity_anova)
+summary(color_anova)
+summary(cut_anova)
+```
+```{r}
+# Histograms for univariate distributions
+hist(diamonds$price, main = "Distribution of Price")
+hist(diamonds$carat, main = "Distribution of Carat")
+
+# Boxplots for categorical variables vs price
+boxplot(price ~ cut, data = diamonds, main = "Price vs Cut")
+boxplot(price ~ color, data = diamonds, main = "Price vs Color")
+boxplot(price ~ clarity, data = diamonds, main = "Price vs Clarity")
+
+# Scatterplots for continuous variables vs price
+plot(diamonds$carat, diamonds$price, main = "Carat vs Price")
+```
+```{r}
+# Interaction plots (example with cut and color)
+diamonds$clarity <- factor(diamonds$clarity, levels = c("I3", "I2", "I1", "SI2", "SI1", "VS2", "VS1", "VVS2", "VVS1", "IF", "FL"))
+diamonds$color <- factor(diamonds$color, levels = c("J", "I", "H", "G", "F", "E", "D"))
+diamonds$cut <- factor(diamonds$cut, levels = c("Fair", "Good", "Very Good", "Ideal", "Astor Ideal"))
+
+interaction.plot(diamonds$cut, diamonds$color, diamonds$price,
+                 main = "Interaction: Cut vs Color on Price",
+                 xlab = "Cut", ylab = "Mean Price", trace.label = "Color")
+
+interaction.plot(diamonds$cut, diamonds$clarity, diamonds$price,
+                 main = "Interaction: Cut vs Clarity on Price",
+                 xlab = "Cut", ylab = "Mean Price", trace.label = "Clarity")
+
+interaction.plot(diamonds$color, diamonds$clarity, diamonds$price,
+                 main = "Interaction: Color vs Clarity on Price",
+                 xlab = "Color", ylab = "Mean Price", trace.label = "Clarity")
+```
+```{r}
+# Boxplots for continuous variables
+boxplot(diamonds$carat, main = "Boxplot of Carat")
+boxplot(diamonds$price, main = "Boxplot of Price")
+```
+```{r}
+carat_model <- lm(price ~ carat, data = diamonds)
+summary(carat_model)
+```
+```{r}
+# Example transformation (log transformation)
+diamonds$log_price <- log(diamonds$price)
+diamonds$log_carat <- log(diamonds$carat)
+log_carat_model <- lm(log_price ~ log_carat, data = diamonds)
+summary(log_carat_model)
+```
+```{r}
+par(mfrow = c(2, 2)) # Create a 2x2 plotting grid
+plot(carat_model) # Generate diagnostic plots
+par(mfrow = c(1, 1)) # Reset to single plot
+```
+```{r}
+par(mfrow = c(2, 2)) # Create a 2x2 plotting grid
+plot(log_carat_model) # Generate diagnostic plots
+par(mfrow = c(1, 1)) # Reset to single plot
+```
+
